@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6489644809246104393, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
+      propertyPath: turnSpeed
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 8005517660653129220, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
       propertyPath: m_Name
       value: Car Variant - Van

@@ -97,13 +97,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 0}
   targetPoint: {fileID: 0}
-  speed: 5
-  turnSpeed: 0
+  speed: 15
+  turnSpeed: 100
   canDrive: 1
   carDrivePoints: []
   splinePoints: []
   splineComputer: {fileID: 0}
   splineFollower: {fileID: 1941638644018827674}
+  direction: 0
 --- !u!114 &1941638644018827674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +204,7 @@ MonoBehaviour:
     color: {r: 0, g: 0, b: 0, a: 0}
     size: 0
     percent: 0
-  wrapMode: 1
+  wrapMode: 0
   followMode: 0
   autoStartPosition: 0
   _follow: 1

@@ -13,25 +13,32 @@ public class Car : MonoBehaviour
     public Transform targetPoint;
     public float speed;
     public float turnSpeed;
-    public bool canDrive;
-    
-    public List<SplinePoint> carDrivePoints;
-    public SplinePoint[] splinePoints;
+    [SerializeField] private bool canDrive;
 
+    [SerializeField] private List<SplinePoint> carDrivePoints;
     public SplineComputer splineComputer;
     public SplineFollower splineFollower;
+    public float direction = 0;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
 
-        StartCoroutine(CreatePath());
+        StartCoroutine(CreatePathPoints());
     }
 
     public void ResetPosition()
     {
-        transform.position = spawnPoint.position;
-        transform.rotation = spawnPoint.rotation;
+        if (canDrive)
+        {
+            transform.position = spawnPoint.position;
+            transform.rotation = spawnPoint.rotation;
+            carDrivePoints.Clear();
+        }
+        else
+        {
+            splineFollower.SetPercent(0);
+        }
     }
 
     void Update()
@@ -39,87 +46,67 @@ public class Car : MonoBehaviour
         if (canDrive)
         {
             MoveCar();
+            TurnCar(direction);
         }
         else
         {
-            FollowPath();
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            TurnCar(-60);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            TurnCar(60);
+            CreatePath();
         }
     }
 
     private void MoveCar()
     {
-        if (Vector3.Distance(transform.position, targetPoint.position) > .5f)
-        {
-            // transform.position += transform.forward * speed * Time.deltaTime;
-
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-        }
-        else
-        {
-            rb.velocity = Vector3.zero;
-            speed = 0;
-
-            canDrive = false;
-
-            ActionManager.OnCarReachedTarget?.Invoke();
-        }
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
-    public void TurnCar(float turnValue)
+    public void StopCar()
     {
-        if (canDrive)
-        {
-            // Vector3 currentRotation = transform.localEulerAngles;
-            //
-            // currentRotation.y += turnValue;
-            //
-            // Debug.Log(currentRotation);
-            //
-            // transform.localEulerAngles = currentRotation;
+        rb.velocity = Vector3.zero;
+        speed = 0;
 
-            transform.Rotate(0, turnValue * Time.deltaTime, 0);
-        }
+        canDrive = false;
+
+        ActionManager.OnCarReachedTarget?.Invoke();
     }
 
-    private void FollowPath()
+    private void TurnCar(float turnValue)
     {
-        splinePoints = splineComputer.GetPoints(SplineComputer.Space.World);
-        splineComputer.SetPoints(carDrivePoints.ToArray(), SplineComputer.Space.World);
+        transform.Rotate(0, turnValue * turnSpeed * Time.deltaTime, 0);
+    }
+
+    private void CreatePath()
+    {
+        // splinePoints = splineComputer.GetPoints(SplineComputer.Space.World);
+        splineComputer.SetPoints(carDrivePoints.ToArray());
         splineComputer.RebuildImmediate();
 
         splineFollower.followSpeed = 5;
         splineFollower.follow = true;
     }
 
-    IEnumerator CreatePath()
+    IEnumerator CreatePathPoints()
     {
         while (canDrive)
         {
             SplinePoint newSplinePoint = new SplinePoint(transform.position);
-            
+
             if (!carDrivePoints.Contains(newSplinePoint))
             {
                 carDrivePoints.Add(newSplinePoint);
             }
-            
-            yield return new WaitForSeconds(.5f);
 
+            yield return new WaitForSeconds(.5f);
         }
-        
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        // if(canDrive) ResetPosition();
+        if (other.gameObject.TryGetComponent(out Car car) || other.gameObject.CompareTag("Obstacle"))
+        {
+            for (int i = 0; i < GameManager.Instance.spawnedCars.Count; i++)
+            {
+                GameManager.Instance.spawnedCars[i].ResetPosition();
+            }
+        }
     }
 }
