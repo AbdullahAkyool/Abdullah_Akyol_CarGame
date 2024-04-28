@@ -8,8 +8,8 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
 
-    public List<Car> cars;
-    [SerializeField]private int currentCarIndex = -1;
+    public List<Car> carPrefabs;
+    [SerializeField] private int currentCarIndex = -1;
     private float timeLimit = 20f;
     private float timer;
 
@@ -20,6 +20,8 @@ public class LevelManager : MonoBehaviour
     }
 
     public List<TransformList> carPointsLists = new List<TransformList>();
+
+    public List<SplineComputer> SplineComputers;
 
     private void Awake()
     {
@@ -35,15 +37,21 @@ public class LevelManager : MonoBehaviour
 
     public void TurnCar(float turnValue)
     {
-        cars[currentCarIndex].GetComponent<Car>().TurnCar(turnValue);
+        carPrefabs[currentCarIndex].TurnCar(turnValue);
     }
 
     private void ActivateNextCar()
     {
+        if (currentCarIndex >= carPrefabs.Count) return;
+
         currentCarIndex++;
-        
-        var newCar = Instantiate(cars[currentCarIndex], transform);
-        
+
+        var newCar = Instantiate(carPrefabs[currentCarIndex], transform);
+
+        newCar.splineComputer = SplineComputers[currentCarIndex];
+        newCar.splineFollower.spline = SplineComputers[currentCarIndex];
+
+
         if (carPointsLists.Count >= 1)
         {
             TransformList currentCarList = carPointsLists[currentCarIndex];
@@ -52,7 +60,7 @@ public class LevelManager : MonoBehaviour
             {
                 newCar.spawnPoint = currentCarList.carTransforms[0];
                 newCar.targetPoint = currentCarList.carTransforms[1];
-                
+
                 newCar.ResetPosition();
             }
         }
