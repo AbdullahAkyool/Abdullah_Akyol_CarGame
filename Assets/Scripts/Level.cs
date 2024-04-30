@@ -14,9 +14,9 @@ public class Level : MonoBehaviour
 
     public List<TransformList> carPointsLists = new List<TransformList>();
 
-    public List<SplineComputer> splineComputers;
+    public List<SplineComputer> splineComputers;  //pool'da sorun cikardigi icin diziden spline computer cekme islemi iptal edildi
 
-    public void DeactivateAllPoints()
+    public void DeactivateAllPoints() //baslangicta level'daki tum pointlerin aktifligini kapat
     {
         for (int i = 0; i < carPointsLists.Count; i++)
         {

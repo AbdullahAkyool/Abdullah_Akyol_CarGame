@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 73324b55f67f54c7bbf43204788b8bbe, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 01f4eb1c73693428d923f1520032e7f9, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.37550685, g: 0.61415917, b: 0.8667227, a: 1}
+  m_IndirectSpecularColor: {r: 0.48278856, g: 0.52762324, b: 0.5972531, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -517,7 +517,7 @@ GameObject:
   - component: {fileID: 634846871}
   - component: {fileID: 634846870}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Restart Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -866,7 +866,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1309631532}
   m_Layer: 5
-  m_Name: Restart
+  m_Name: Restart Level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1084,6 +1084,7 @@ MonoBehaviour:
   allLevels:
   - {fileID: 3112962373470578560, guid: def2f2d43c1bdc94a92648a785ebb4a5, type: 3}
   - {fileID: 5924374722318785940, guid: a15983dbb18cac0438e45dc2d5d3fce5, type: 3}
+  - {fileID: 5924374722318785940, guid: cd394fb18943a7649a2bfa6bf3a2d1b5, type: 3}
   carsParent: {fileID: 1560201406}
   levelsParent: {fileID: 526236752}
 --- !u!1 &1560201406

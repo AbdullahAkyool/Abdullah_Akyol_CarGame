@@ -78,6 +78,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1350288306451821608, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
+      propertyPath: m_Size.y
+      value: 1.5402365
+      objectReference: {fileID: 0}
+    - target: {fileID: 1350288306451821608, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
+      propertyPath: m_Center.y
+      value: 0.7649777
+      objectReference: {fileID: 0}
     - target: {fileID: 1715540792422889616, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -120,7 +128,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8005517660653129220, guid: 739adf23f2de64c4fb4e1c63f609240b, type: 3}
       propertyPath: m_Name
-      value: Car Variant
+      value: Car Variant - Muscle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

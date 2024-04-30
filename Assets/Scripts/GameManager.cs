@@ -35,14 +35,14 @@ public class GameManager : MonoBehaviour
     {
         if(currentCarIndex<= 0) return;
         
-        if (!spawnedCars[currentCarIndex - 1].isCycle)
+        if (!spawnedCars[currentCarIndex - 1].isCycle)   //önceki araba targeta ulasti mi kontrolü
         {
-            spawnedCars[currentCarIndex - 1].CheckPreviousCarCycle();
+            spawnedCars[currentCarIndex - 1].CheckCarCycle();
         }
         
         if (!spawnedCars[currentCarIndex].isCycle)
         {
-            spawnedCars[currentCarIndex].CheckPreviousCarCycle();
+            spawnedCars[currentCarIndex].CheckCarCycle(); 
         }
 
         if (spawnedCars[currentCarIndex - 1].isCycle && !spawnedCars[currentCarIndex].isCycle)
@@ -51,36 +51,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetDirectionOfCar(float direction)
+    public void SetDirectionOfCar(float direction)  //aktif araba sag sol donusu
     {
         activeCar.direction = direction;
     }
 
-    public void IncreaseSpeed(float multiplier)
+    public void IncreaseSpeed(float multiplier) //donuslerde hizi arttır
     {
         activeCar.driveSpeed *= multiplier;
         activeCar.turnSpeed *= multiplier;
     }
 
-    public void DecreaseSpeed(float multiplier)
+    public void DecreaseSpeed(float multiplier)  //donus bittiginde eski hiza don
     {
         activeCar.driveSpeed /= multiplier;
         activeCar.turnSpeed /= multiplier;
     }
 
-    private void ActivateNextCar()
+    private void ActivateNextCar()  //siradaki arabaya gec
     {
         if (currentCarIndex >= LevelManager.Instance.allCars.Count) return;
 
-        //activeCar = LevelManager.Instance.SpawnCar();
+        activeCar = LevelManager.Instance.SpawnCar();      //pool'da bazi sorunlar ciktigi icin gecici olarak surekli instantiate denendi. ikisi de calisiyor
 
-        var newCar = LevelManager.Instance.InstantiateNewCar(currentCarIndex);
-        activeCar = newCar;
+        //var newCar = LevelManager.Instance.InstantiateNewCar(currentCarIndex);
+        //activeCar = newCar;
         
         spawnedCars.Add(activeCar);
         
 
-        var newSplineComputer = Instantiate(splineComputerPrefab);
+        var newSplineComputer = Instantiate(splineComputerPrefab);  //dreamteck sorunlarından dolayi her araba icin yeni bir spline computer instantiate edildi
         allSplineComputers.Add(newSplineComputer);
 
         activeCar.splineComputer = newSplineComputer;
@@ -99,12 +99,11 @@ public class GameManager : MonoBehaviour
                 activeCar.targetPoint.gameObject.SetActive(true);
 
                 //activeCar.ResetPosition();
-                ResetAllCars();
+                ResetAllCars();  // her yeni arabada oyundaki tüm arabalar spawn konumlarına donuyor
             }
         }
         
-        FreezeGame();
-
+        FreezeGame(); //her yeni arabada oyunu duraklat
     }
 
     private void FreezeGame()
@@ -112,24 +111,10 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         
         gameFrozen = true;
-        
-        // for (int i = 0; i < spawnedCars.Count; i++)
-        // {
-        //     var frozenCar = spawnedCars[i];
-        //     
-        //     frozenCar.FreezeCar();
-        // }
     }
 
     public void UnFreezeGame()
     {
-        // for (int i = 0; i < spawnedCars.Count; i++)
-        // {
-        //     var frozenCar = spawnedCars[i];
-        //     
-        //     frozenCar.UnFreezeCar();
-        // }
-        
         Time.timeScale = 1;
         
         gameFrozen = false;
@@ -153,10 +138,10 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < spawnedCars.Count; i++)
             {
-                //LevelManager.Instance.DespawnCar(spawnedCars[i]);
-                //spawnedCars[i].MakeDriveable();
+                LevelManager.Instance.DespawnCar(spawnedCars[i]); //pool içerisinden sıradaki level'i cekme
+                spawnedCars[i].MakeDriveable();
 
-                Destroy(spawnedCars[i].gameObject);
+                //Destroy(spawnedCars[i].gameObject);
                 Destroy(allSplineComputers[i].gameObject);
             }
         }
@@ -170,7 +155,7 @@ public class GameManager : MonoBehaviour
         ActivateNextCar();
     }
 
-    public void CheckLastCar()
+    public void CheckLastCar()  //son araba da target'a ulasirsa siradaki level'a gec
     {
         if (currentCarIndex == LevelManager.Instance.allCars.Count)
         {
@@ -179,7 +164,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestartGame()
+    public void RestartGame() //oyun kitlendiginde yeniden baslatmak icin
     {
         currentCarIndex = 0;
 
@@ -187,10 +172,10 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < spawnedCars.Count; i++)
             {
-                //LevelManager.Instance.DespawnCar(spawnedCars[i]);
-                //spawnedCars[i].MakeDriveable();
+                LevelManager.Instance.DespawnCar(spawnedCars[i]);
+                spawnedCars[i].MakeDriveable();
 
-                Destroy(spawnedCars[i].gameObject);
+                //Destroy(spawnedCars[i].gameObject);
                 Destroy(allSplineComputers[i].gameObject);
             }
         }

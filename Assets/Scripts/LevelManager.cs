@@ -29,8 +29,8 @@ public class LevelManager : MonoBehaviour
 
    private void Start()
    {
-      GrowLevelPool();
-      //GrowCarPool();
+      GrowLevelPool(); //level pool'unu olustur
+      GrowCarPool(); // araba pool'unu olustur
    }
 
    private void GrowCarPool()
@@ -53,7 +53,7 @@ public class LevelManager : MonoBehaviour
       }
    }
 
-   public Car SpawnCar()
+   public Car SpawnCar() //son arabayi ac
    {
       if (carsPool.Count <= 0)
       {
@@ -67,7 +67,7 @@ public class LevelManager : MonoBehaviour
       return car;
    }
 
-   public Level SpawnLevel()
+   public Level SpawnLevel() //son level'i ac
    {
       if (levelsPool.Count <= 0)
       {
@@ -79,19 +79,27 @@ public class LevelManager : MonoBehaviour
       return level;
    }
 
-   public void DespawnCar(Car car)
+   // public void OpenLevelInLevelsPanel(int index)
+   // {
+   //    if (index > 0 && index < levelsPool.Count)
+   //    {
+   //       var level = levelsPool[index];
+   //    }
+   // }
+
+   public void DespawnCar(Car car)  //araci geri pool'a at
    {
       car.gameObject.SetActive(false);
       carsPool.Enqueue(car);
    }
 
-   public void DespawnLevel(Level level)
+   public void DespawnLevel(Level level)  //level'i geri pool'a at
    {
       level.gameObject.SetActive(false);
       levelsPool.Enqueue(level);
    }
 
-   public Car InstantiateNewCar(int index)
+   public Car InstantiateNewCar(int index)  //pool sorununda kullanildi
    {
       Car newCar = Instantiate(allCars[index], carsParent.transform);
 

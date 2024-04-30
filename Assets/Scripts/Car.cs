@@ -21,10 +21,7 @@ public class Car : MonoBehaviour
     public bool isCycle;
 
     [SerializeField] private List<SplinePoint> carDrivePoints;
-    //[SerializeField] private List<Vector3> carDrivePoints;
-    //[SerializeField] private int pathPointIndex;
     
-    //private SplinePoint[] splinePoints;
     public SplineComputer splineComputer;
     public SplineFollower splineFollower;
     public float direction = 0;
@@ -75,7 +72,7 @@ public class Car : MonoBehaviour
         ActionManager.OnCarReachedTarget?.Invoke();
     }
 
-    public void MakeDriveable()
+    public void MakeDriveable()  //yeni level'a geciste arabayi surulebilir yap
     {
         canDrive = true;
         canFollow = false;
@@ -95,7 +92,7 @@ public class Car : MonoBehaviour
         transform.Rotate(0, turnValue * turnSpeed * Time.deltaTime, 0);
     }
 
-    private void FollowPath()
+    private void FollowPath()  //olusturulan path'i spline computer'a bas ve takip et
     {
         if (splineComputer.pointCount <= 0)
         {
@@ -105,28 +102,9 @@ public class Car : MonoBehaviour
         
             splineFollower.followSpeed = followSpeed;
         }
-
-        // speed = 15;
-        //
-        // if (pathPointIndex < carDrivePoints.Count)
-        // {
-        //     Vector3 targetPathPoint = carDrivePoints[pathPointIndex];
-        //     float distance = Vector3.Distance(targetPathPoint, transform.localPosition);
-        //     
-        //     Quaternion targetRotation = Quaternion.LookRotation(targetPathPoint - transform.localPosition);
-        //     transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * 20);
-        //     
-        //     transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPathPoint, speed * Time.deltaTime);
-        //     
-        //     if (distance <= .5)
-        //     {
-        //         pathPointIndex++;
-        //     }
-        //     
-        // }
     }
 
-    IEnumerator CreatePathPoints()
+    IEnumerator CreatePathPoints()  //belirlenen sürede bir aracin konumunu listeye at ve path olustur
     {
         while (canDrive)
         {
@@ -137,37 +115,11 @@ public class Car : MonoBehaviour
                 carDrivePoints.Add(newSplinePoint);
             }
 
-            // var newPathPoint = transform.localPosition;
-            // newPathPoint.y = 0;
-            //
-            // if (!carDrivePoints.Contains(newPathPoint))
-            // {
-            //     carDrivePoints.Add(newPathPoint);
-            // }
-
             yield return new WaitForSeconds(.2f);
         }
     }
-
-    // void CheckCarCycle()
-    // {
-    //     float distance = Vector3.Distance(transform.localPosition, targetPoint.localPosition);
-    //     
-    //     if (distance <= 1f)
-    //     {
-    //         isCycle = true;
-    //     }
-    // }
-    //
-    public void CheckPreviousCarCycle()
+    public void CheckCarCycle() //aracın hedefe ulasip ulasmadigini kontrol et
     {
-        // if(GameManager.Instance.currentCarIndex <= 0) return;
-        //
-        // if (GameManager.Instance.spawnedCars[GameManager.Instance.currentCarIndex - 1].isCycle)
-        // {
-        //     isCompletedMission = true;
-        // }
-        
         float distance = Vector3.Distance(transform.localPosition, targetPoint.localPosition);
         
         if (distance <= 1f)
