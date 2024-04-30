@@ -8,12 +8,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public List<Car> carPrefabs;
-    [SerializeField] private int currentCarIndex = -1;
-    private float timeLimit = 20f;
-    private float timer;
-    private Car activeCar = null;
-    public List<Car> spawnedCars;
+    public int currentCarIndex = -1;
+    [SerializeField] private Car activeCar = null;
+    [SerializeField] private List<Car> spawnedCars;
+
+    [SerializeField] private Level activeLevel;
+
+    [SerializeField] private SplineComputer splineComputerPrefab;
+    [SerializeField] private List<SplineComputer> allSplineComputers;
+
+    [SerializeField] private bool gameFrozen;
 
     private void Awake()
     {
@@ -24,8 +28,27 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CarPointsManager.Instance.DeactivateAllPoints();
-        ActivateNextCar();
+        CreateLevel();
+    }
+
+    private void Update()
+    {
+        if(currentCarIndex<= 0) return;
+        
+        if (!spawnedCars[currentCarIndex - 1].isCycle)
+        {
+            spawnedCars[currentCarIndex - 1].CheckPreviousCarCycle();
+        }
+        
+        if (!spawnedCars[currentCarIndex].isCycle)
+        {
+            spawnedCars[currentCarIndex].CheckPreviousCarCycle();
+        }
+
+        if (spawnedCars[currentCarIndex - 1].isCycle && !spawnedCars[currentCarIndex].isCycle)
+        {
+            ResetAllCars();
+        }
     }
 
     public void SetDirectionOfCar(float direction)
@@ -35,32 +58,37 @@ public class GameManager : MonoBehaviour
 
     public void IncreaseSpeed(float multiplier)
     {
-        activeCar.speed *= multiplier;
+        activeCar.driveSpeed *= multiplier;
         activeCar.turnSpeed *= multiplier;
     }
 
     public void DecreaseSpeed(float multiplier)
     {
-        activeCar.speed /= multiplier;
+        activeCar.driveSpeed /= multiplier;
         activeCar.turnSpeed /= multiplier;
     }
 
     private void ActivateNextCar()
     {
-        if (currentCarIndex >= carPrefabs.Count) return;
+        if (currentCarIndex >= LevelManager.Instance.allCars.Count) return;
 
-        currentCarIndex++;
+        //activeCar = LevelManager.Instance.SpawnCar();
 
-        var newCar = Instantiate(carPrefabs[currentCarIndex], transform);
+        var newCar = LevelManager.Instance.InstantiateNewCar(currentCarIndex);
         activeCar = newCar;
+        
         spawnedCars.Add(activeCar);
+        
 
-        activeCar.splineComputer = CarPointsManager.Instance.splineComputers[currentCarIndex];
-        activeCar.splineFollower.spline = CarPointsManager.Instance.splineComputers[currentCarIndex];
+        var newSplineComputer = Instantiate(splineComputerPrefab);
+        allSplineComputers.Add(newSplineComputer);
 
-        if (CarPointsManager.Instance.carPointsLists.Count >= 1)
+        activeCar.splineComputer = newSplineComputer;
+        activeCar.splineFollower.spline = newSplineComputer;
+
+        if (activeLevel.carPointsLists.Count >= 1)
         {
-            CarPointsManager.TransformList currentCarList = CarPointsManager.Instance.carPointsLists[currentCarIndex];
+            Level.TransformList currentCarList = activeLevel.carPointsLists[currentCarIndex];
 
             if (currentCarList.carTransforms.Count >= 1)
             {
@@ -70,17 +98,89 @@ public class GameManager : MonoBehaviour
                 activeCar.spawnPoint.gameObject.SetActive(true);
                 activeCar.targetPoint.gameObject.SetActive(true);
 
-                activeCar.ResetPosition();
+                //activeCar.ResetPosition();
+                ResetAllCars();
             }
         }
+        
+        FreezeGame();
+
+    }
+
+    private void FreezeGame()
+    {
+        Time.timeScale = 0;
+        
+        gameFrozen = true;
+        
+        // for (int i = 0; i < spawnedCars.Count; i++)
+        // {
+        //     var frozenCar = spawnedCars[i];
+        //     
+        //     frozenCar.FreezeCar();
+        // }
+    }
+
+    public void UnFreezeGame()
+    {
+        // for (int i = 0; i < spawnedCars.Count; i++)
+        // {
+        //     var frozenCar = spawnedCars[i];
+        //     
+        //     frozenCar.UnFreezeCar();
+        // }
+        
+        Time.timeScale = 1;
+        
+        gameFrozen = false;
+    }
+
+    public void ResetAllCars()
+    {
+        for (int i = 0; i < spawnedCars.Count; i++)
+        {
+            var listCar = spawnedCars[i];
+
+            listCar.ResetPosition();
+        }
+    }
+
+    private void CreateLevel()
+    {
+        currentCarIndex = 0;
+
+        if (spawnedCars.Count >= 1)
+        {
+            for (int i = 0; i < spawnedCars.Count; i++)
+            {
+                //LevelManager.Instance.DespawnCar(spawnedCars[i]);
+                //spawnedCars[i].MakeDriveable();
+
+                Destroy(spawnedCars[i].gameObject);
+                Destroy(allSplineComputers[i].gameObject);
+            }
+        }
+
+        spawnedCars.Clear();
+        allSplineComputers.Clear();
+
+        activeLevel = LevelManager.Instance.SpawnLevel();
+        activeLevel.DeactivateAllPoints();
+
+        ActivateNextCar();
     }
 
     public void CheckLastCar()
     {
-        if (currentCarIndex == carPrefabs.Count - 1)
+        if (currentCarIndex == LevelManager.Instance.allCars.Count)
         {
-            
+            LevelManager.Instance.DespawnLevel(activeLevel);
+            CreateLevel();
         }
     }
-    
+
+    private void OnDestroy()
+    {
+        ActionManager.OnCarReachedTarget -= ActivateNextCar;
+    }
 }

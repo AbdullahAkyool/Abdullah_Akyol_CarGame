@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using Dreamteck.Splines;
 using UnityEngine;
 
-public class CarPointsManager : MonoBehaviour
+public class Level : MonoBehaviour
 {
-    public static CarPointsManager Instance;
-    
     [Serializable]
     public class TransformList
     {
@@ -17,11 +15,6 @@ public class CarPointsManager : MonoBehaviour
     public List<TransformList> carPointsLists = new List<TransformList>();
 
     public List<SplineComputer> splineComputers;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public void DeactivateAllPoints()
     {

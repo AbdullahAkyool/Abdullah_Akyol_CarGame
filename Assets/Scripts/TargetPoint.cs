@@ -7,12 +7,11 @@ public class TargetPoint : MonoBehaviour
 {
    private void OnTriggerEnter(Collider other)
    {
-      if (other.TryGetComponent(out Car car))
+      if (other.TryGetComponent(out Car car) && car.targetPoint.gameObject == gameObject)
       {
+         GameManager.Instance.currentCarIndex++;
          car.StopCar();
-         
-         car.spawnPoint.gameObject.SetActive(false);
-         car.targetPoint.gameObject.SetActive(false);
+         GameManager.Instance.CheckLastCar();
       }
    }
 }
