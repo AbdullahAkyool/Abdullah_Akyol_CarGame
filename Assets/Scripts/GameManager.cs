@@ -179,6 +179,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RestartGame()
+    {
+        currentCarIndex = 0;
+
+        if (spawnedCars.Count >= 1)
+        {
+            for (int i = 0; i < spawnedCars.Count; i++)
+            {
+                //LevelManager.Instance.DespawnCar(spawnedCars[i]);
+                //spawnedCars[i].MakeDriveable();
+
+                Destroy(spawnedCars[i].gameObject);
+                Destroy(allSplineComputers[i].gameObject);
+            }
+        }
+
+        spawnedCars.Clear();
+        allSplineComputers.Clear();
+        
+        activeLevel.DeactivateAllPoints();
+        
+        ActivateNextCar();
+    }
+
     private void OnDestroy()
     {
         ActionManager.OnCarReachedTarget -= ActivateNextCar;
