@@ -36,7 +36,6 @@ public class ControlButton : MonoBehaviour, IPointerDownHandler,IPointerUpHandle
         }
         
         gameManager.IncreaseSpeed(1.5F);
-        GameManager.Instance.UnFreezeGame();
     }
 
     public void OnPointerUp(PointerEventData eventData)

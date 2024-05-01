@@ -115,6 +115,8 @@ public class GameManager : MonoBehaviour
 
     public void UnFreezeGame()
     {
+        if(!gameFrozen) return;
+        
         Time.timeScale = 1;
         
         gameFrozen = false;
